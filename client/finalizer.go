@@ -24,10 +24,14 @@ import (
 )
 
 func AddFinalizerAndUpdate(c client.Client, obj client.Object, finalizer string) error {
+	return AddFinalizerAndUpdateWithContext(context.TODO(), c, obj, finalizer)
+}
+
+func AddFinalizerAndUpdateWithContext(ctx context.Context, c client.Client, obj client.Object, finalizer string) error {
 	if controllerutil.ContainsFinalizer(obj, finalizer) {
 		return nil
 	}
-	_, err := UpdateOnConflict(context.TODO(), c, c, obj, func(obj client.Object) error {
+	_, err := UpdateOnConflict(ctx, c, c, obj, func(obj client.Object) error {
 		controllerutil.AddFinalizer(obj, finalizer)
 		return nil
 	})
@@ -35,10 +39,14 @@ func AddFinalizerAndUpdate(c client.Client, obj client.Object, finalizer string)
 }
 
 func RemoveFinalizerAndUpdate(c client.Client, obj client.Object, finalizer string) error {
+	return RemoveFinalizerAndUpdateWithContext(context.TODO(), c, obj, finalizer)
+}
+
+func RemoveFinalizerAndUpdateWithContext(ctx context.Context, c client.Client, obj client.Object, finalizer string) error {
 	if !controllerutil.ContainsFinalizer(obj, finalizer) {
 		return nil
 	}
-	_, err := UpdateOnConflict(context.TODO(), c, c, obj, func(obj client.Object) error {
+	_, err := UpdateOnConflict(ctx, c, c, obj, func(obj client.Object) error {
 		controllerutil.RemoveFinalizer(obj, finalizer)
 		return nil
 	})
