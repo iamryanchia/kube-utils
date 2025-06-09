@@ -23,6 +23,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+// AddFinalizerAndUpdate adds a finalizer to an object and updates it.
+//
+// Deprecated: use AddFinalizerAndUpdateWithContext instead.
 func AddFinalizerAndUpdate(c client.Client, obj client.Object, finalizer string) error {
 	return AddFinalizerAndUpdateWithContext(context.TODO(), c, obj, finalizer)
 }
@@ -38,6 +41,9 @@ func AddFinalizerAndUpdateWithContext(ctx context.Context, c client.Client, obj 
 	return err
 }
 
+// RemoveFinalizerAndUpdate removes a finalizer from an object and updates it.
+//
+// Deprecated: use RemoveFinalizerAndUpdateWithContext instead.
 func RemoveFinalizerAndUpdate(c client.Client, obj client.Object, finalizer string) error {
 	return RemoveFinalizerAndUpdateWithContext(context.TODO(), c, obj, finalizer)
 }
@@ -54,7 +60,7 @@ func RemoveFinalizerAndUpdateWithContext(ctx context.Context, c client.Client, o
 }
 
 func RemoveFinalizerAndDelete(ctx context.Context, c client.Client, obj client.Object, finalizer string) error {
-	err := RemoveFinalizerAndUpdate(c, obj, finalizer)
+	err := RemoveFinalizerAndUpdateWithContext(ctx, c, obj, finalizer)
 	if err != nil {
 		return err
 	}
